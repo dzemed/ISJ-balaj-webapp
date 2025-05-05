@@ -50,16 +50,11 @@ def zobraz_trenerov():
         FROM Treneri T LEFT JOIN Kurzy K ON T.ID_trenera = K.ID_trenera
     """)
     treneri = cursor.fetchall()
-
     conn.close()
 
-    # Jednoduchý textový výpis trénerov a ich kurzov
-    vystup = "<h2>Zoznam trénerov a kurzov:</h2>"
-    for trener in treneri:
-        vystup += f"<p>{trener}</p>"
-
-    vystup += '<a href="/">Späť</a>'
-    return vystup
+    return render_template("treneri.html", treneri=treneri)
+    
+    
 
 
 
@@ -75,16 +70,7 @@ def zobraz_miesta():
     miesta = cursor.fetchall()
 
     conn.close()
-
-    # Jednoduchý textový výpis miest
-    vystup = "<h2>Zoznam miest:</h2>"
-    for miesto in miesta:
-        vystup += f"<p>{miesto}</p>"
-
-    # Odkaz na návrat
-    vystup += '<a href="/">Späť</a>'
-    return vystup
-
+    return render_template("miesta.html", miesta=miesta)
 
 
 
@@ -98,50 +84,15 @@ def vypis_kapacity():
         SELECT sum(Max_pocet_ucastnikov) FROM Kurzy where Nazov_kurzu LIKE 'p%'
     """)
     kapacity = cursor.fetchall()
-
     conn.close()
-
-    # Jednoduchý textový výpis kapacity
-    vystup = "<h2>Zoznam miest:</h2>"
-    for kapacita in kapacity:
-        vystup += f"<p>{kapacita}</p>"
-
-    # Odkaz na návrat
-    vystup += '<a href="/">Späť</a>'
-    return vystup
+    return render_template("kapacita.html", kapacity=kapacity)
 
 
 
 
 @app.route('/registracia', methods=['GET'])
 def registracia_form():
-    return '''
-        <h1>Registrácia trenéra</h1>
-
-        <form action="/registracia" method="post">
-
-            <label>Meno:</label><br>
-            <input type="text" name="meno" required><br><br>
-
-            <label>Priezvisko:</label><br>
-            <input type="text" name="priezvisko" required><br><br>
-
-            
-            <label>Telefón:</label><br>
-            <input type="text" name="telefon" required><br><br>
-
-            <label>Špecializácia:</label><br>
-            <input type="text" name="specializacia" required><br><br>
-
-            <label>Heslo:</label><br>
-            <input type="text" name="heslo" required><br><br>
-
-            <button type="submit">Registrovať</button>
-
-        </form>
-        <hr>
-        <a href="/">Späť</a>
-    '''
+    return render_template("registracia.html")
 
 
 # API ENDPOINT NA SPRACOVANIE REGISTRÁCIE. Mapuje sa na mená elementov z formulára z predošlého requestu (pomocou request.form[...])
@@ -175,30 +126,7 @@ def registracia_trenera():
 
 @app.route('/prida_kurz', methods=['GET'])
 def pridaj_form():
-    return '''
-        <h1>Pridanie kurzu</h1>
-
-        <form action="/prida_kurz" method="post">
-
-        
-            <label>Názov kurzu:</label><br>
-            <input type="text" name="nazov_kurzu" required><br><br>
-
-            <label>Typ športu:</label><br>
-            <input type="text" name="typ_sportu" required><br><br>
-
-            <label>Max počet účastníkov:</label><br>
-            <input type="text" name="max_pocet_ucastnikov" required><br><br>
-
-            <label>ID trenéra:</label><br>
-            <input type="text" name="id_trenera" required><br><br>
-
-            <button type="submit">Pridať</button>
-
-        </form>
-        <hr>
-        <a href="/">Späť</a>
-    '''
+    return render_template("pridanie.html")
 
 
 def sifrovanie(text):
