@@ -7,10 +7,10 @@
 </head>
 
 <body>
-    <h2>Zoznam miest s kapacitami:</h2>
-    {% for kapacita in kapacity: %}
-        <p>{{ kapacita }}</p>
-    {% endfor %}
+    <h2>Zoznam kapacit:</h2>
+    {% for kapacita in kapacity %}
+        <p> {{ kapacita.Nazov_kurzu }} = {{ kapacita.Max_pocet_ucastnikov}}</p>
+    {% endfor %} 
     <a href="/">Späť</a>
 </body>
 </html>

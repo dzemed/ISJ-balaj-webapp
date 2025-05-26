@@ -1,8 +1,17 @@
 from flask import Flask, request, render_template
+from flask_sqlalchemy import SQLAlchemy
 import sqlite3
 import hashlib
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, instance_relative_config=True)
+
+db_path = os.path.join(app.instance_path, "kurzy.db")
+
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}".replace("\\","/")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db = SQLAlchemy(app)
+
 
 def pripoj_db():
     conn = sqlite3.connect("kurzy.db")
@@ -23,12 +32,22 @@ def index():
         <hr>
     '''
 
+class Kurz(db.Model):
+    __tablename__ = "Kurzy"
+    ID_kurzu              = db.Column(db.Integer, primary_key=True)
+    Nazov_kurzu           = db.Column(db.String, nullable=False)
+    Typ_sportu            = db.Column(db.String)
+    Max_pocet_ucastnikov  = db.Column(db.Integer)
+    ID_trenera            = db.Column(db.Integer)
 
+    def __repr__(self):
+        return f"<Kurz {self.Nazov_kurzu}>"
 
 
 # PODSTRÁNKA NA ZOBRAZENIE KURZOV
 @app.route('/kurzy')  # API endpoint
 def zobraz_kurzy():
+    """
     conn = pripoj_db()
     cursor = conn.cursor()
 
@@ -36,56 +55,45 @@ def zobraz_kurzy():
     kurzy = cursor.fetchall()
     conn.close()
     return render_template("kurzy.html", kurzy=kurzy)
+    """
+    
+    kurzy = Kurz.query.all()
+    return render_template("kurzy.html",kurzy=kurzy)
 
+class Trener(db.Model):
+    __tablename__ = "Treneri"
+    ID_trenera     = db.Column(db.Integer, primary_key=True)
+    Meno           = db.Column(db.String, nullable=False)
+    Priezvisko    = db.Column(db.String)
+    Specializacia = db.Column(db.String)
 
-
+    def __repr__(self):
+        return f"<Trener {self.Meno}>"
 
 @app.route('/treneri')  # API endpoint
 def zobraz_trenerov():
-    conn = pripoj_db()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT T.ID_trenera, T.Meno || ' ' || T.Priezvisko as Trener, Nazov_kurzu
-        FROM Treneri T LEFT JOIN Kurzy K ON T.ID_trenera = K.ID_trenera
-    """)
-    treneri = cursor.fetchall()
-    conn.close()
-
-    return render_template("treneri.html", treneri=treneri)
-    
+    treneri = Trener.query.all()
+    return render_template("treneri.html",treneri=treneri)
     
 
-
+class Miesto(db.Model):
+    __tablename__ = "Miesta"
+    ID_miesta     = db.Column(db.Integer, primary_key=True)
+    Nazov_miesta  = db.Column(db.String)
+    Kapacita  = db.Column(db.String, nullable=False)
 
 
 @app.route('/miesta')  # API endpoint
 def zobraz_miesta():
-    conn = pripoj_db()
-    cursor = conn.cursor()
 
-    cursor.execute("""
-        SELECT Nazov_miesta FROM Miesta
-    """)
-    miesta = cursor.fetchall()
-
-    conn.close()
-    return render_template("miesta.html", miesta=miesta)
-
-
+    miesta = Miesto.query.all()
+    return render_template("miesta.html",miesta=miesta)
 
 
 @app.route('/kapacity')  # API endpoint
 def vypis_kapacity():
-    conn = pripoj_db()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT sum(Max_pocet_ucastnikov) FROM Kurzy where Nazov_kurzu LIKE 'p%'
-    """)
-    kapacity = cursor.fetchall()
-    conn.close()
-    return render_template("kapacita.html", kapacity=kapacity)
+    kurzy = Kurz.query.with_entities(Kurz.Nazov_kurzu, Kurz.Max_pocet_ucastnikov).filter(Kurz.Nazov_kurzu.like('p%')).all()
+    return render_template("kapacita.html",kapacity=kurzy)
 
 
 
@@ -117,12 +125,7 @@ def registracia_trenera():
     conn.close()
 
     # Hlásenie o úspešnej registrácii
-    return '''
-        <h2>Tréner bol úspešne zaregistrovaný!</h2>
-        <hr>
-        <a href="/">Späť</a>
-    '''
-
+    return render_template("prid_trener.html")
 
 @app.route('/prida_kurz', methods=['GET'])
 def pridaj_form():
@@ -169,11 +172,7 @@ def pridaj_kurz():
     conn.close()
 
 
-    return '''
-        <h2>Kurz bol úspešne pridaný!</h2>
-        <hr>
-        <a href="/">Späť</a>
-    '''
+    return render_template("prid_kurz.html")
 
 
 

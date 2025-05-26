@@ -8,9 +8,10 @@
 
 <body>
     <h2>Zoznam trénerov:</h2>
-    {% for trener in treneri: %}
-        <p>{{ trener }}</p>
-    {% endfor %}
+
+    {% for trener in treneri %}
+        <p> {{ trener.Meno }} {{ trener.Priezvisko }} ( ID: {{ trener.ID_trenera }})</p>
+    {% endfor %} 
     <a href="/">Späť</a>
 </body>
 </html>

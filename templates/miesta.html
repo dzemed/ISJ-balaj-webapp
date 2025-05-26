@@ -8,9 +8,9 @@
     
 <body>
     <h2>Zoznam miest:</h2>
-    {% for miesto in miesta: %}
-        <p>{{ miesto }}</p>
-    {% endfor %}
+    {% for miesto in miesta %}
+        <p> {{ miesto.Nazov_miesta }} ( ID: {{ miesto.ID_miesta }})</p>
+    {% endfor %} 
     <a href="/">Späť</a>
 </body>
 </html>   
