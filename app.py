@@ -4,7 +4,11 @@ import sqlite3
 import hashlib
 import os
 
+from flask import g, session
+from i18n import TRANSLATIONS, SUPPORTED
+
 app = Flask(__name__, instance_relative_config=True)
+app.secret_key = "tajny_kluc"
 
 db_path = os.path.join(app.instance_path, "kurzy.db")
 
@@ -12,6 +16,19 @@ app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}".replace("\\","/")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
+@app.before_request
+def set_lang():
+    lang = request.args.get("lang")
+
+    if lang not in SUPPORTED:
+        lang = session.get("lang", "sk")
+
+    session["lang"] = lang
+    g.t = TRANSLATIONS[lang]    
+
+@app.context_processor
+def inject_translations():
+    return dict(t=g.t)
 
 def pripoj_db():
     conn = sqlite3.connect("kurzy.db")
@@ -20,17 +37,7 @@ def pripoj_db():
 
 @app.route('/')  
 def index():
-    # Úvodná homepage s dvoma tlačidami ako ODKAZMI na svoje stránky - volanie API nedpointu
-    return '''
-        <h1>Výber z databázy</h1>
-        <a href="/kurzy"><button>Zobraz všetky kurzy</button></a>
-        <a href="/treneri"><button>Zobraz všetkých trénerov</button></a>
-        <a href="/miesta"><button>Zobraz miesta</button></a>
-        <a href="/kapacity"><button>Zobraz kapacitu</button></a>
-        <a href="/registracia"><button>Registruj Trenéra</button></a>
-        <a href="/prida_kurz"><button>Pridanie kurzu</button></a>
-        <hr>
-    '''
+    return render_template("mainscreen.html")
 
 class Kurz(db.Model):
     __tablename__ = "Kurzy"

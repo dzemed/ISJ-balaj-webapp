@@ -7,27 +7,27 @@
 </head>
     
 <body>
-    <h1>Pridanie kurzu</h1>
+    <h2>{{ t.add_course }}</h2>
 
     <form action="/prida_kurz" method="post">
 
     
-        <label>Názov kurzu:</label><br>
+        <label>{{ t.name }}</label><br>
         <input type="text" name="nazov_kurzu" required><br><br>
 
-        <label>Typ športu:</label><br>
+        <label>{{ t.surname }}:</label><br>
         <input type="text" name="typ_sportu" required><br><br>
 
-        <label>Max počet účastníkov:</label><br>
+        <label>{{ t.max_capacity }}</label><br>
         <input type="text" name="max_pocet_ucastnikov" required><br><br>
 
-        <label>ID trenéra:</label><br>
+        <label>{{ t.trainer_ID }}:</label><br>
         <input type="text" name="id_trenera" required><br><br>
 
-        <button type="submit">Pridať</button>
+        <button type="submit">{{ t.Add }}</button>
 
     </form>
     <hr>
-    <a href="/">Späť</a>
+    <a href="/">{{ t.back }}</a>
 </body>
 </html>   
