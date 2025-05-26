@@ -12,16 +12,16 @@
     <form action="/prida_kurz" method="post">
 
     
-        <label>{{ t.name }}</label><br>
+        <label>{{ t.course_name }}</label><br>
         <input type="text" name="nazov_kurzu" required><br><br>
 
-        <label>{{ t.surname }}:</label><br>
+        <label>{{ t.sport_type }}</label><br>
         <input type="text" name="typ_sportu" required><br><br>
 
         <label>{{ t.max_capacity }}</label><br>
         <input type="text" name="max_pocet_ucastnikov" required><br><br>
 
-        <label>{{ t.trainer_ID }}:</label><br>
+        <label>{{ t.trainer_ID }}</label><br>
         <input type="text" name="id_trenera" required><br><br>
 
         <button type="submit">{{ t.Add }}</button>

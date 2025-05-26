@@ -19,7 +19,14 @@ TRANSLATIONS = {
         "max_capacity": "Max počet účastníkov:",
         "trainer_ID": "ID trenéra:",
         "registrate": "Registrovať",
-        "Add": "Pridať"
+        "Add": "Pridať",
+        "pick": "Výber z Databázy",
+        "show_courses": "Zobraz všetky kurzy",
+        "show_trainer": "Zobraz všetkých trénerov",
+        "show_places": "Zobraz miesta",
+        "show_capacity": "Zobraz kapacitu",
+        "register_trainer": "Registruj Trenéra",
+        "add_course": "Pridaj kurz"
 
 
 
@@ -47,7 +54,14 @@ TRANSLATIONS = {
         "max_capacity": "Max capacity:",
         "trainer_ID": "Trainer ID:",
         "registrate": "Registrate",
-        "Add": "Add"
+        "Add": "Add",
+        "pick": "Select from database",
+        "show_courses": "Show all courses",
+        "show_trainer": "Show all trainers",
+        "show_places": "Show places",
+        "show_capacity": "Show capacity",
+        "register_trainer": "Register trainer",
+        "add_course": "Add course"
     }
 }
 SUPPORTED = {"sk", "en"}
